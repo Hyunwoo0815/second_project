@@ -1,104 +1,124 @@
-const express = require("express");
-const axios = require("axios");
-const path = require("path");
-
-const app = express();
-const PORT = 3000;
-
-// API 요청에 필요한 정보
-const BASE_URL = "http://apis.data.go.kr/1613000/ExpBusInfoService";
-const SERVICE_KEY =
-  "WKp1VvR7awnciw/bWZyS/ucpv8Tiihgn8LgHK7a7Hw0u+ewXMZNo7buPDOywQc2k7pjJssVL39S0Oe6RWzCa3w==";
-
-// Express 설정
-app.set("view engine", "ejs");
-app.set("views", path.join(__dirname, "views"));
-app.use(express.static(path.join(__dirname, "public")));
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
-
-// XML 데이터를 파싱하는 함수
-const parseXML = async (xmlData) => {
-  const { parseStringPromise } = require("xml2js");
-  return await parseStringPromise(xmlData, { explicitArray: false });
-};
-
-// 고속버스 터미널 목록 가져오기
-const getAllBusTerminals = async () => {
-  try {
-    const response = await axios.get(`${BASE_URL}/getExpBusTrminlList`, {
-      params: {
-        serviceKey: SERVICE_KEY,
-        _type: "xml",
-        pageNo: 1,
-        numOfRows: 3000,
-      },
-    });
-    const parsedData = await parseXML(response.data);
-    return parsedData.response.body.items.item || [];
-  } catch (error) {
-    console.error("Error fetching terminals:", error.message);
-    return [];
-  }
-};
-
-// 현재 날짜부터 7일간의 날짜 생성 함수
-const getNextSevenDays = () => {
-  const dates = [];
-  const today = new Date();
-  for (let i = 0; i < 7; i++) {
-    const date = new Date(today);
-    date.setDate(today.getDate() + i); // i일 후의 날짜 계산
-    const formattedDate = date.toISOString().split("T")[0]; // YYYY-MM-DD 형식
-    dates.push(formattedDate);
-  }
-  return dates;
-};
-
-// 메인 페이지 라우트
-app.get("/", async (req, res) => {
-  try {
-    const terminals = await getAllBusTerminals(); // 터미널 목록 가져오기
-    const dates = getNextSevenDays(); // 7일간의 날짜 생성
-    res.render("index", { terminals, dates }); // 터미널 목록과 날짜 전달
-  } catch (error) {
-    console.error("Error rendering index page:", error.message);
-    res.render("index", { terminals: [], dates: [], error: "데이터를 불러올 수 없습니다." });
-  }
-});
-
-// 시간표 조회 라우트
-app.post("/schedule", async (req, res) => {
-    const { dep_terminal_id, arr_terminal_id, dep_date } = req.body;
-  
-    try {
-      const response = await axios.get(`${BASE_URL}/getStrtpntAlocFndExpbusInfo`, {
-        params: {
-          serviceKey: SERVICE_KEY,
-          _type: "xml",
-          depTerminalId: dep_terminal_id,
-          arrTerminalId: arr_terminal_id,
-          depPlandTime: dep_date.replace(/-/g, ""), // YYYYMMDD 형식으로 변환
-          numOfRows: 100,
-        },
-      });
-  
-      // API 응답 데이터 파싱
-      const parsedData = await parseXML(response.data);
-      const buses = (parsedData.response.body.items.item || []).map(bus => ({
-        depPlandTime: bus.depPlandTime,
-        fare: bus.charge || "N/A", // `charge` 항목을 요금으로 사용
-      }));
-  
-      res.render("result", { buses, error: null });
-    } catch (error) {
-      console.error("Error fetching schedule:", error.message);
-      res.render("result", { buses: [], error: "스케줄 데이터를 불러올 수 없습니다." });
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>고속버스 터미널 시간표 조회</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f7f7f7;
     }
-  });
-  
+    h1 {
+      text-align: center;
+      margin-top: 20px;
+      color: #333;
+    }
+    form {
+      max-width: 500px;
+      margin: 20px auto;
+      padding: 20px;
+      background-color: #fff;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+      font-weight: bold;
+      color: #555;
+    }
+    select, input[type="date"], button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    button {
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
 
-// 서버 실행
-app.listen(PORT, () => {
-  console.log(`Server running at http://localhost:${PORT}`);
-});
+    /* 모바일 최적화 */
+    @media (max-width: 768px) {
+      body {
+        padding: 10px;
+      }
+      form {
+        width: 100%;
+        padding: 15px;
+        border-radius: 5px;
+      }
+      label {
+        font-size: 14px;
+      }
+      select, input[type="date"], button {
+        font-size: 13px;
+        padding: 8px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 18px;
+        margin-top: 10px;
+      }
+      form {
+        padding: 10px;
+      }
+      label {
+        font-size: 12px;
+      }
+      select, input[type="date"], button {
+        font-size: 12px;
+        padding: 6px;
+      }
+      button {
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>고속버스 터미널 시간표 조회</h1>
+  <form action="/schedule" method="POST" target="_self">
+    <label for="dep_terminal_id">출발 터미널:</label>
+    <select name="dep_terminal_id" id="dep_terminal_id" required>
+      <option value="" disabled selected>터미널을 선택해 주세요</option>
+      <% terminals.forEach(terminal => { %>
+        <option value="<%= terminal.terminalId %>"><%= terminal.terminalNm %></option>
+      <% }) %>
+    </select>
+
+    <label for="arr_terminal_id">도착 터미널:</label>
+    <select name="arr_terminal_id" id="arr_terminal_id" required>
+      <option value="" disabled selected>터미널을 선택해 주세요</option>
+      <% terminals.forEach(terminal => { %>
+        <option value="<%= terminal.terminalId %>"><%= terminal.terminalNm %></option>
+      <% }) %>
+    </select>
+
+    <label for="dep_date">출발 날짜:</label>
+    <select name="dep_date" id="dep_date" required>
+      <option value="" disabled selected>출발 날짜를 선택해 주세요</option>
+      <% dates.forEach(date => { %>
+        <option value="<%= date %>"><%= date %></option>
+      <% }) %>
+    </select>
+
+    <button type="submit">시간표 조회</button>
+  </form>
+</body>
+</html>
