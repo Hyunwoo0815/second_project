@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>버스 시간표 결과</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f7f7f7;
+    }
+    h1 {
+      text-align: center;
+      margin-top: 20px;
+      color: #333;
+    }
+    .container {
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 20px;
+      background-color: #fff;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      padding: 10px;
+      text-align: center;
+      border: 1px solid #ddd;
+    }
+    th {
+      background-color: #007bff;
+      color: white;
+    }
+    td {
+      background-color: #f9f9f9;
+    }
+    .error {
+      color: red;
+      text-align: center;
+      margin-top: 20px;
+    }
+    a {
+      color: #007bff;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    .btn {
+      display: inline-block;
+      padding: 5px 10px;
+      background-color: #007bff;
+      color: white;
+      border-radius: 4px;
+      text-decoration: none;
+      transition: background-color 0.3s;
+    }
+    .btn:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <h1>버스 시간표 결과</h1>
+  <div class="container">
+    <% if (error) { %>
+      <p class="error"><%= error %></p>
+    <% } else { %>
+      <table>
+        <thead>
+          <tr>
+            <th>출발 시간</th>
+            <th>요금</th>
+            <th>잔여좌석</th>
+            <th>예매</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% buses.forEach(bus => { %>
+            <% 
+              function formatTime(depPlandTime) {
+                const year = depPlandTime.substring(0, 4);
+                const month = depPlandTime.substring(4, 6);
+                const day = depPlandTime.substring(6, 8);
+                const hour = depPlandTime.substring(8, 10);
+                const minute = depPlandTime.substring(10, 12);
+                return `${year}년 ${month}월 ${day}일 ${hour}:${minute}`;
+              }
+            %>
+            <tr>
+              <td><%= formatTime(bus.depPlandTime) %></td>
+              <td><%= bus.fare %>원</td>
+              <td>
+                <a href="https://txbus.t-money.co.kr" class="btn">조회하기</a>
+              </td>
+              <td>
+                <a href="https://www.bustago.or.kr" class="btn">바로가기</a>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    <% } %>
+    <a href="/">메인 페이지로 돌아가기</a>
+  </div>
+</body>
+</html>
