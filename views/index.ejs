@@ -28,7 +28,7 @@
       height: 80%; /* 화면 높이의 80% 사용 */
       display: flex;
       flex-direction: column;
-      justify-content: space-between; /* 폼 요소 간 균등 분배 */
+      justify-content: space-between;
       padding: 20px;
       background-color: #fff;
       border: 1px solid #ddd;
@@ -40,13 +40,18 @@
       font-size: 16px;
       font-weight: bold;
       color: #555;
+      margin-bottom: 10px; /* 제목과 드롭다운 사이 간격 */
+      height: 40px; /* 드롭다운 높이와 일치 */
+      line-height: 40px; /* 텍스트를 가운데 정렬 */
     }
     select, button {
       width: 100%;
-      padding: 12px;
+      padding: 10px;
+      margin-bottom: 20px; /* 입력 창 사이 간격 */
       border: 1px solid #ccc;
       border-radius: 6px;
       font-size: 15px;
+      height: 40px; /* 높이 통일 */
     }
     button {
       background-color: #007bff;
@@ -76,7 +81,8 @@
       }
       select, button {
         font-size: 14px;
-        padding: 10px;
+        padding: 8px;
+        height: 38px; /* 높이 조정 */
       }
     }
     @media (max-width: 480px) {
@@ -93,10 +99,13 @@
       }
       label {
         font-size: 13px;
+        height: 36px; /* 텍스트 높이 조정 */
+        line-height: 36px;
       }
       select, button {
         font-size: 13px;
-        padding: 8px;
+        padding: 6px;
+        height: 36px; /* 높이 조정 */
       }
     }
   </style>
