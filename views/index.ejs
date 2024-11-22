@@ -13,47 +13,44 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      min-height: 100vh; /* 전체 화면 높이 */
+      min-height: 100vh; /* 화면 높이를 기준으로 레이아웃 */
     }
     .container {
-      width: 100%;
-      max-width: 500px;
-      min-height: 50vh; /* 최소 높이: 화면의 50% */
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      background-color: #fff;
+      width: 90%;
+      max-width: 600px; /* 큰 화면에서도 최대 폭 제한 */
+      min-height: 50vh; /* 화면 높이의 최소 50% 사용 */
       padding: 20px;
+      background-color: #fff;
       border: 1px solid #ddd;
       border-radius: 10px;
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between; /* 요소 간 간격 자동 배치 */
     }
     h1 {
       text-align: center;
       margin-bottom: 20px;
-      font-size: 24px;
+      font-size: 2rem; /* 반응형 텍스트 크기 */
       color: #333;
     }
     form {
       display: flex;
       flex-direction: column;
+      gap: 15px; /* 각 요소 간격 */
     }
     label {
-      font-size: 16px;
+      font-size: 1rem;
       font-weight: bold;
       color: #555;
-      margin-bottom: 10px;
-      height: 40px;
-      line-height: 40px; /* 드롭다운 높이와 일치 */
     }
     select, button {
       width: 100%;
       padding: 10px;
-      margin-bottom: 20px;
       border: 1px solid #ccc;
       border-radius: 6px;
-      font-size: 15px;
-      height: 40px; /* 높이 통일 */
+      font-size: 1rem;
+      height: 45px; /* 높이 통일 */
     }
     button {
       background-color: #007bff;
@@ -74,33 +71,30 @@
     /* 반응형 스타일 */
     @media (max-width: 768px) {
       .container {
-        width: 90%;
-        min-height: 60vh; /* 모바일에서 조금 더 차지 */
-        padding: 15px;
+        width: 95%; /* 화면 폭 거의 다 사용 */
+        min-height: 60vh; /* 모바일에서는 더 많은 높이 차지 */
       }
-      label {
-        font-size: 14px;
+      h1 {
+        font-size: 1.5rem; /* 텍스트 크기 조정 */
       }
-      select, button {
-        font-size: 14px;
-        padding: 8px;
-        height: 38px; /* 높이 조정 */
+      label, select, button {
+        font-size: 0.9rem;
+        height: 40px;
       }
     }
+
     @media (max-width: 480px) {
       h1 {
-        font-size: 18px;
+        font-size: 1.2rem; /* 더 작은 텍스트 크기 */
         margin-bottom: 15px;
       }
       label {
-        font-size: 13px;
-        height: 36px;
-        line-height: 36px;
+        font-size: 0.8rem;
       }
       select, button {
-        font-size: 13px;
-        padding: 6px;
-        height: 36px;
+        font-size: 0.8rem;
+        height: 38px; /* 요소 높이 축소 */
+        padding: 8px;
       }
     }
   </style>
