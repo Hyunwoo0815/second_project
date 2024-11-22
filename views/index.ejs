@@ -11,43 +11,45 @@
       padding: 0;
       background-color: #f9f9f9;
       display: flex;
-      flex-direction: column;
       justify-content: center;
       align-items: center;
-      min-height: 100vh; /* 화면 전체 높이 사용 */
+      min-height: 100vh; /* 전체 화면 높이 */
     }
-    h1 {
-      text-align: center;
-      margin: 20px 0;
-      font-size: 24px;
-      color: #333;
-    }
-    form {
-      width: 80%;
+    .container {
+      width: 100%;
       max-width: 500px;
-      height: 80%; /* 화면 높이의 80% 사용 */
+      min-height: 50vh; /* 최소 높이: 화면의 50% */
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
-      padding: 20px;
+      justify-content: center;
       background-color: #fff;
+      padding: 20px;
       border: 1px solid #ddd;
       border-radius: 10px;
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 24px;
+      color: #333;
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+    }
     label {
-      display: block;
       font-size: 16px;
       font-weight: bold;
       color: #555;
-      margin-bottom: 10px; /* 제목과 드롭다운 사이 간격 */
-      height: 40px; /* 드롭다운 높이와 일치 */
-      line-height: 40px; /* 텍스트를 가운데 정렬 */
+      margin-bottom: 10px;
+      height: 40px;
+      line-height: 40px; /* 드롭다운 높이와 일치 */
     }
     select, button {
       width: 100%;
       padding: 10px;
-      margin-bottom: 20px; /* 입력 창 사이 간격 */
+      margin-bottom: 20px;
       border: 1px solid #ccc;
       border-radius: 6px;
       font-size: 15px;
@@ -69,12 +71,12 @@
       transform: scale(0.98);
     }
 
-    /* 모바일 최적화 */
+    /* 반응형 스타일 */
     @media (max-width: 768px) {
-      form {
-        width: 90%; /* 모바일에서 더 넓게 */
+      .container {
+        width: 90%;
+        min-height: 60vh; /* 모바일에서 조금 더 차지 */
         padding: 15px;
-        border-radius: 8px;
       }
       label {
         font-size: 14px;
@@ -88,56 +90,51 @@
     @media (max-width: 480px) {
       h1 {
         font-size: 18px;
-        margin: 10px 0;
-      }
-      form {
-        width: 90%;
-        height: 85%; /* 모바일에서 화면의 85% 사용 */
-        padding: 10px;
-        border: none;
-        box-shadow: none;
+        margin-bottom: 15px;
       }
       label {
         font-size: 13px;
-        height: 36px; /* 텍스트 높이 조정 */
+        height: 36px;
         line-height: 36px;
       }
       select, button {
         font-size: 13px;
         padding: 6px;
-        height: 36px; /* 높이 조정 */
+        height: 36px;
       }
     }
   </style>
 </head>
 <body>
-  <h1>고속버스 터미널 시간표 조회</h1>
-  <form action="/schedule" method="POST" target="_self">
-    <label for="dep_terminal_id">출발 터미널:</label>
-    <select name="dep_terminal_id" id="dep_terminal_id" required>
-      <option value="" disabled selected>터미널을 선택해 주세요</option>
-      <% terminals.forEach(terminal => { %>
-        <option value="<%= terminal.terminalId %>"><%= terminal.terminalNm %></option>
-      <% }) %>
-    </select>
+  <div class="container">
+    <h1>고속버스 터미널 시간표 조회</h1>
+    <form action="/schedule" method="POST" target="_self">
+      <label for="dep_terminal_id">출발 터미널:</label>
+      <select name="dep_terminal_id" id="dep_terminal_id" required>
+        <option value="" disabled selected>터미널을 선택해 주세요</option>
+        <% terminals.forEach(terminal => { %>
+          <option value="<%= terminal.terminalId %>"><%= terminal.terminalNm %></option>
+        <% }) %>
+      </select>
 
-    <label for="arr_terminal_id">도착 터미널:</label>
-    <select name="arr_terminal_id" id="arr_terminal_id" required>
-      <option value="" disabled selected>터미널을 선택해 주세요</option>
-      <% terminals.forEach(terminal => { %>
-        <option value="<%= terminal.terminalId %>"><%= terminal.terminalNm %></option>
-      <% }) %>
-    </select>
+      <label for="arr_terminal_id">도착 터미널:</label>
+      <select name="arr_terminal_id" id="arr_terminal_id" required>
+        <option value="" disabled selected>터미널을 선택해 주세요</option>
+        <% terminals.forEach(terminal => { %>
+          <option value="<%= terminal.terminalId %>"><%= terminal.terminalNm %></option>
+        <% }) %>
+      </select>
 
-    <label for="dep_date">출발 날짜:</label>
-    <select name="dep_date" id="dep_date" required>
-      <option value="" disabled selected>출발 날짜를 선택해 주세요</option>
-      <% dates.forEach(date => { %>
-        <option value="<%= date %>"><%= date %></option>
-      <% }) %>
-    </select>
+      <label for="dep_date">출발 날짜:</label>
+      <select name="dep_date" id="dep_date" required>
+        <option value="" disabled selected>출발 날짜를 선택해 주세요</option>
+        <% dates.forEach(date => { %>
+          <option value="<%= date %>"><%= date %></option>
+        <% }) %>
+      </select>
 
-    <button type="submit">시간표 조회</button>
-  </form>
+      <button type="submit">시간표 조회</button>
+    </form>
+  </div>
 </body>
 </html>
