@@ -10,6 +10,11 @@
       margin: 0;
       padding: 0;
       background-color: #f9f9f9;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh; /* 화면 전체 높이 사용 */
     }
     h1 {
       text-align: center;
@@ -18,9 +23,12 @@
       color: #333;
     }
     form {
-      width: 80%; /* 화면의 80% 사용 */
-      max-width: 500px; /* 데스크톱에서는 500px 이하 유지 */
-      margin: 0 auto;
+      width: 80%;
+      max-width: 500px;
+      height: 80%; /* 화면 높이의 80% 사용 */
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between; /* 폼 요소 간 균등 분배 */
       padding: 20px;
       background-color: #fff;
       border: 1px solid #ddd;
@@ -29,7 +37,6 @@
     }
     label {
       display: block;
-      margin-top: 10px;
       font-size: 16px;
       font-weight: bold;
       color: #555;
@@ -37,13 +44,11 @@
     select, button {
       width: 100%;
       padding: 12px;
-      margin-top: 8px;
       border: 1px solid #ccc;
       border-radius: 6px;
       font-size: 15px;
     }
     button {
-      margin-top: 15px;
       background-color: #007bff;
       color: white;
       border: none;
@@ -61,11 +66,8 @@
 
     /* 모바일 최적화 */
     @media (max-width: 768px) {
-      h1 {
-        font-size: 20px;
-      }
       form {
-        width: 90%; /* 모바일에서는 90%로 확대 */
+        width: 90%; /* 모바일에서 더 넓게 */
         padding: 15px;
         border-radius: 8px;
       }
@@ -80,13 +82,14 @@
     @media (max-width: 480px) {
       h1 {
         font-size: 18px;
-        margin: 15px 0;
+        margin: 10px 0;
       }
       form {
-        width: 90%; /* 작은 화면에서도 90% 유지 */
+        width: 90%;
+        height: 85%; /* 모바일에서 화면의 85% 사용 */
         padding: 10px;
-        box-shadow: none;
         border: none;
+        box-shadow: none;
       }
       label {
         font-size: 13px;
